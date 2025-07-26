@@ -1,0 +1,20 @@
+{
+  "name": "bbc-iplayer",
+  "version": "1.0.0",
+  "description": "BBC-iPlyaer-AutomationTest",
+  "main": "index.js",
+  "scripts": {
+    "playwright:test:chromium": "playwright test --project=chromium --headed",
+    "playwright:test:chromium:headless": "set HEADLESS=true && playwright test --project=chromium",
+    "playwright:test:firefox": "playwright test --project=firefox --headed",
+    "playwright:test:webkit": "playwright test --project=webkit --headed"
+  },
+  "keywords": [],
+  "author": "BBC_iPlyer",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@playwright/test": "^1.54.1",
+    "@types/node": "^24.1.0"
+  }
+}
