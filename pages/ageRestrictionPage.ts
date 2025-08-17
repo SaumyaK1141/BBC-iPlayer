@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { Page, expect } from '@playwright/test';
 import { BasePageModel } from './basePageModel';
 import { AgeRestrictionModel } from '../pageObjects/ageRestrictionModel';
 
@@ -20,6 +20,8 @@ export class AgeRestrictionPage extends BasePageModel {
 
     async agrRestrictionCloseIcon(): Promise<void> {
         await this.ageRestrictionPage.closeIcon.click();
+        await this.ageRestrictionPage.ageRestrictionModel.isHidden();
+        await expect(this.ageRestrictionPage.ageRestrictionModel).not.toBeVisible();
     }
 
 }
