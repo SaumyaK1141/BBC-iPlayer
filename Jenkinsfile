@@ -10,17 +10,14 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                bat '''
-                  npm ci
-                  npm install -D @playwright/test
-                  npx playwright install
-                '''
+                bat 'npm ci'
+                bat 'npm install -D @playwright/test'
+                bat 'npx playwright install'
             }
         }
 
         stage('Run Playwright Tests') {
             steps {
-                // Run tests in headless Chromium
                 bat 'npx playwright test --project=chromium --reporter=html'
             }
             post {
@@ -35,18 +32,20 @@ pipeline {
 
         stage('Archive Reports') {
             steps {
-                // Archive Playwright HTML report
-                archiveArtifacts artifacts='playwright-report/**', allowEmptyArchive: true
+                // Archive artifacts (HTML report)
+                archiveArtifacts artifacts: 'playwright-report/**', allowEmptyArchive: true
 
-                // Optionally, publish as HTML in Jenkins (requires HTML Publisher Plugin)
-                publishHTML(target: [
-                    allowMissing: true,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
-                    reportDir: 'playwright-report',
-                    reportFiles: 'index.html',
-                    reportName: 'Playwright HTML Report'
-                ])
+                // Publish HTML report (requires HTML Publisher plugin)
+                publishHTML(
+                    target: [
+                        reportDir: 'playwright-report',
+                        reportFiles: 'index.html',
+                        reportName: 'Playwright HTML Report',
+                        allowMissing: true,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true
+                    ]
+                )
             }
         }
     }
