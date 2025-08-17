@@ -1,24 +1,19 @@
 pipeline {
-    agent { 
-        docker { 
-            image 'mcr.microsoft.com/playwright:v1.17.2-focal'  // Official Playwright Docker image
-            args '--user root:root' // run as root to avoid permission issues
-        } 
-    }
+    agent any
 
     stages {
         stage('Checkout Code') {
             steps {
-                // Pull your BBC-iPlayer project from GitHub
+                // Pull code from the repo
                 git branch: 'master', url: 'https://github.com/SaumyaK1141/BBC-iPlayer.git'
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                // Install Playwright and required browsers
+                // Install Node.js dependencies and Playwright browsers
                 sh '''
-                  npm install
+                  npm ci
                   npm install -D @playwright/test
                   npx playwright install
                 '''
@@ -27,22 +22,22 @@ pipeline {
 
         stage('Run Playwright Tests') {
             steps {
-                // Run all tests in Chromium with headed mode
+                // Run all Playwright tests (chromium)
                 sh 'npx playwright test --project=chromium --headed'
             }
             post {
                 success {
-                    echo 'Tests passed ✅'
+                    echo '✅ Playwright tests passed!'
                 }
                 failure {
-                    echo 'Tests failed ❌'
+                    echo '❌ Playwright tests failed.'
                 }
             }
         }
 
         stage('Show Report') {
             steps {
-                // Optional: generate HTML report
+                // Open HTML report
                 sh 'npx playwright show-report'
             }
         }
