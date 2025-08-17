@@ -10,7 +10,7 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 // Pull your BBC-iPlayer project from GitHub
-                git branch: 'main', url: 'https://github.com/SaumyaK1141/BBC-iPlayer.git'
+                git branch: 'master', url: 'https://github.com/SaumyaK1141/BBC-iPlayer.git'
             }
         }
 
