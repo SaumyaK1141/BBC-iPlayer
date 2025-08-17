@@ -4,15 +4,13 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                // Pull code from the repo
                 git branch: 'master', url: 'https://github.com/SaumyaK1141/BBC-iPlayer.git'
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                // Install Node.js dependencies and Playwright browsers
-                sh '''
+                bat '''
                   npm ci
                   npm install -D @playwright/test
                   npx playwright install
@@ -22,8 +20,8 @@ pipeline {
 
         stage('Run Playwright Tests') {
             steps {
-                // Run all Playwright tests (chromium)
-                sh 'npx playwright test --project=chromium --headed'
+                // Run tests in headless Chromium
+                bat 'npx playwright test --project=chromium --reporter=html'
             }
             post {
                 success {
@@ -35,10 +33,20 @@ pipeline {
             }
         }
 
-        stage('Show Report') {
+        stage('Archive Reports') {
             steps {
-                // Open HTML report
-                sh 'npx playwright show-report'
+                // Archive Playwright HTML report
+                archiveArtifacts artifacts='playwright-report/**', allowEmptyArchive: true
+
+                // Optionally, publish as HTML in Jenkins (requires HTML Publisher Plugin)
+                publishHTML(target: [
+                    allowMissing: true,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: 'playwright-report',
+                    reportFiles: 'index.html',
+                    reportName: 'Playwright HTML Report'
+                ])
             }
         }
     }
